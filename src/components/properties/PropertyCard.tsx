@@ -27,9 +27,9 @@ interface PropertyCardProps {
 
 export function PropertyCard({ property, className }: PropertyCardProps) {
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-KE", {
+    return new Intl.NumberFormat("en-MW", {
       style: "currency",
-      currency: "KES",
+      currency: "MWK",
       maximumFractionDigits: 0,
     }).format(price);
   };

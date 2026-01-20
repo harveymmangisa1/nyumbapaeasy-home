@@ -32,9 +32,9 @@ export default function PropertyDetail() {
   }
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-KE", {
+    return new Intl.NumberFormat("en-MW", {
       style: "currency",
-      currency: "KES",
+      currency: "MWK",
       maximumFractionDigits: 0,
     }).format(price);
   };
