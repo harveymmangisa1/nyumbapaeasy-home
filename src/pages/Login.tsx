@@ -147,7 +147,7 @@ export default function Login() {
               Find Your Perfect Home
             </h2>
             <p className="text-lg opacity-90 mb-8">
-              Join thousands of Kenyans who have found their dream properties through NyumbaPaEasy.
+              Join thousands of Malawians who have found their dream properties through NyumbaPaEasy.
             </p>
             <div className="grid grid-cols-3 gap-6">
               {[

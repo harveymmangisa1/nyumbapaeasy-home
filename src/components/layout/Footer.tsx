@@ -44,7 +44,7 @@ export function Footer() {
               <span className="font-display font-bold text-xl">NyumbaPaEasy</span>
             </Link>
             <p className="text-primary-foreground/70 mb-6 max-w-sm">
-              Your trusted partner in finding the perfect property in Kenya. 
+              Your trusted partner in finding the perfect property in Malawi. 
               Whether buying, selling, or renting - we make it easy.
             </p>
             <div className="flex gap-3">
@@ -87,7 +87,7 @@ export function Footer() {
             © 2024 NyumbaPaEasy. All rights reserved.
           </p>
           <p className="text-primary-foreground/60 text-sm">
-            Made with ❤️ in Kenya
+            Made with ❤️ in Malawi
           </p>
         </div>
       </div>

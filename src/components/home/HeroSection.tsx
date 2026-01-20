@@ -41,7 +41,7 @@ export function HeroSection() {
           <div className="inline-flex items-center gap-2 bg-primary-foreground/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6 animate-fade-in">
             <Home className="h-4 w-4 text-primary-foreground" />
             <span className="text-sm font-medium text-primary-foreground">
-              Find Your Perfect Home in Kenya
+              Find Your Perfect Home in Malawi
             </span>
           </div>
 
@@ -57,7 +57,7 @@ export function HeroSection() {
           </h1>
 
           <p className="text-lg md:text-xl text-primary-foreground/80 mb-10 animate-slide-up" style={{ animationDelay: "0.1s" }}>
-            Browse thousands of properties for sale and rent across Kenya. 
+            Browse thousands of properties for sale and rent across Malawi. 
             Find residential homes, apartments, lodges, and commercial spaces.
           </p>
 
