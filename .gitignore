@@ -7,15 +7,16 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Dependencies
+node_modules/
+dist/
+dist-ssr/
 *.local
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
@@ -38,6 +39,7 @@ public/build/
 .cache/
 .parcel-cache/
 .eslintcache
+.vite
 
 # Test coverage
 coverage/
@@ -49,11 +51,16 @@ pids
 *.seed
 *.pid.lock
 
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
+# Python/Django
+__pycache__/
+*.py[cod]
+*$py.class
+db.sqlite3
+/backend/db.sqlite3
+/backend/.env
+/backend/static/
+/backend/media/
+backend_env/
 
 # Temporary folders
 tmp/
