@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   bio TEXT,
   website TEXT,
   social_links JSONB DEFAULT '{}',
-  total_properties_sold INTEGER DEFAULT 0,
+  total_properties_sold INTEGER DEFAULT 0, 
   total_properties_rented INTEGER DEFAULT 0,
   average_rating DECIMAL(3,2) DEFAULT 0.00,
   is_active BOOLEAN DEFAULT true,

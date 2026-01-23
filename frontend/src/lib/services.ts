@@ -90,16 +90,24 @@ export interface AuthUser {
 }
 
 // Auth functions
-export const signUp = async (email: string, password: string, metadata?: Record<string, any>) => {
+export const signUp = async (userData: {
+  email: string;
+  password: string;
+  first_name?: string;
+  last_name?: string;
+  user_type?: string;
+}) => {
   try {
     const data = await apiFetch('/users/', {
       method: 'POST',
       body: JSON.stringify({
-        email,
-        password,
-        password2: password, // Simple alignment for now
-        username: email.split('@')[0], // Default username
-        ...metadata
+        email: userData.email,
+        password: userData.password,
+        password2: userData.password,
+        username: userData.email.split('@')[0],
+        first_name: userData.first_name || '',
+        last_name: userData.last_name || '',
+        user_type: userData.user_type || 'client'
       })
     })
     return { data, error: null }

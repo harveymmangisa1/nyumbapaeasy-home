@@ -3,12 +3,11 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
 export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
     const token = localStorage.getItem('token')
 
-    // Don't set Content-Type if we're sending FormData (browser will set it with boundary)
     const isFormData = options.body instanceof FormData
 
     const headers: Record<string, string> = {
-        ...(token ? { 'Authorization': `Token ${token}` } : {}),
-        ...options.headers as Record<string, string>,
+        ...(token ? { Authorization: `Token ${token}` } : {}),
+        ...(options.headers as Record<string, string>),
     }
 
     if (!isFormData && !headers['Content-Type']) {
@@ -20,10 +19,17 @@ export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
         headers,
     })
 
+    const data = await response.json().catch(() => ({}))
+
     if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.detail || errorData.error || 'API Request failed')
+        console.error('API Error:', data)
+        throw new Error(
+            data.detail ||
+            data.error ||
+            data.message ||
+            'API Request failed'
+        )
     }
 
-    return response.json()
+    return data
 }
