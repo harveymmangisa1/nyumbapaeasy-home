@@ -11,12 +11,13 @@ class VerificationDocumentSerializer(serializers.ModelSerializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     verification_documents = VerificationDocumentSerializer(many=True, read_only=True)
+    full_name = serializers.SerializerMethodField()
     
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 
+        fields = ['id', 'username', 'email', 'first_name', 'last_name',
                  'user_type', 'phone_number', 'profile_picture', 'is_verified', 
-                 'verification_documents', 'password', 'date_joined', 'last_login']
+                 'verification_documents', 'password', 'date_joined', 'last_login', 'full_name']
         extra_kwargs = {
             'password': {'write_only': True},
             'date_joined': {'read_only': True},
@@ -26,6 +27,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data['password'])
         return super().create(validated_data)
+
+    def get_full_name(self, obj):
+        return obj.get_full_name().strip()
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only=True)
