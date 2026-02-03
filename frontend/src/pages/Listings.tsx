@@ -82,7 +82,7 @@ export default function Listings() {
               <div className="relative flex-1">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search by location..."
+                  placeholder="Search by location, title, or keyword..."
                   className="pl-10"
                   value={activeFilters.search}
                   onChange={(e) => {

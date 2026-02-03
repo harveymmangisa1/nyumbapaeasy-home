@@ -125,6 +125,9 @@ export default function Login() {
                       Landlord
                     </Button>
                   </div>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Landlords list and manage their own properties. Agencies register as agents.
+                  </p>
                 </div>
               </>
             )}

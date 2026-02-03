@@ -4,8 +4,31 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail } from "lucide-react";
+<<<<<<< HEAD
+import { useState } from "react";
+import { toast } from "sonner";
 
 const ForgotPassword = () => {
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!email.trim()) {
+      toast.error("Please enter your email address.");
+      return;
+    }
+    setIsSubmitting(true);
+    setTimeout(() => {
+      toast.success("Reset link sent! Check your inbox.");
+      setIsSubmitting(false);
+    }, 800);
+  };
+
+=======
+
+const ForgotPassword = () => {
+>>>>>>> origin/main
   return (
     <>
       <Header />
@@ -16,16 +39,36 @@ const ForgotPassword = () => {
             Enter your email address and we’ll send you a link to reset your password.
           </p>
 
+<<<<<<< HEAD
+          <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+=======
           <form className="mt-6 space-y-4">
+>>>>>>> origin/main
             <div>
               <Label htmlFor="reset-email">Email</Label>
               <div className="relative mt-2">
                 <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+<<<<<<< HEAD
+                <Input
+                  id="reset-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  className="pl-10"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? "Sending..." : "Send reset link"}
+=======
                 <Input id="reset-email" type="email" placeholder="you@example.com" className="pl-10" />
               </div>
             </div>
             <Button type="submit" className="w-full">
               Send reset link
+>>>>>>> origin/main
             </Button>
           </form>
         </div>
