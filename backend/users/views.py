@@ -31,8 +31,12 @@ class UserViewSet(viewsets.ModelViewSet):
     def login(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
-        
+
         user = authenticate(request, username=username, password=password)
+        if not user and username:
+            lookup_user = CustomUser.objects.filter(email=username).first()
+            if lookup_user:
+                user = authenticate(request, username=lookup_user.username, password=password)
         
         if user:
             token, _ = Token.objects.get_or_create(user=user)
@@ -47,6 +51,8 @@ class UserViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['post'])
     def logout(self, request):
+        if request.user.is_authenticated:
+            Token.objects.filter(user=request.user).delete()
         logout(request)
         return Response({'status': 'success'})
     
@@ -54,6 +60,26 @@ class UserViewSet(viewsets.ModelViewSet):
     def profile(self, request):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def stats(self, request):
+        if not request.user.is_authenticated:
+            return Response({'error': 'Authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        from properties.models import Property, PropertyInquiry, PropertyView
+        properties_qs = Property.objects.filter(owner=request.user)
+
+        total_properties = properties_qs.count()
+        active_listings = properties_qs.filter(is_available=True).count()
+        total_views = PropertyView.objects.filter(property__in=properties_qs).count()
+        total_inquiries = PropertyInquiry.objects.filter(property__in=properties_qs).count()
+
+        return Response({
+            'total_properties': total_properties,
+            'active_listings': active_listings,
+            'total_views': total_views,
+            'total_inquiries': total_inquiries
+        })
 
     @action(detail=False, methods=['post'])
     def upload_verification(self, request):

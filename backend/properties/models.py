@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from agents.models import Agent
 
@@ -30,6 +31,13 @@ class Property(models.Model):
     area = models.IntegerField(help_text="Area in square feet")
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     agent = models.ForeignKey(Agent, on_delete=models.SET_NULL, null=True, blank=True)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='properties'
+    )
     is_featured = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
     is_available = models.BooleanField(default=True)
