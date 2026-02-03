@@ -1,4 +1,5 @@
-from rest_framework import viewsets, filters, status
+from rest_framework import viewsets, filters, status, permissions
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -6,24 +7,49 @@ from django.db.models import Q
 from .models import Property, PropertyInquiry, PropertyView
 from .serializers import PropertySerializer, PropertyInquirySerializer
 
+class IsOwnerOrAgent(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        if not request.user.is_authenticated:
+            return False
+        if obj.owner_id == request.user.id:
+            return True
+        if obj.agent and obj.agent.user_id == request.user.id:
+            return True
+        return request.user.is_staff
+
 class PropertyViewSet(viewsets.ModelViewSet):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrAgent]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['category', 'price_type', 'bedrooms', 'bathrooms', 'agent', 'is_featured', 'is_verified']
+    filterset_fields = [
+        'category',
+        'price_type',
+        'bedrooms',
+        'bathrooms',
+        'agent',
+        'owner',
+        'is_featured',
+        'is_verified'
+    ]
     search_fields = ['title', 'description', 'location']
     ordering_fields = ['price', 'created_at', 'rating', 'area']
     ordering = ['-created_at']
     
     def perform_create(self, serializer):
+        if self.request.user.is_authenticated and self.request.user.user_type not in ['landlord', 'admin']:
+            raise PermissionDenied('Only landlords can create property listings.')
+
         # Auto-assign agent if user has an agent profile
         agent = None
         if self.request.user.is_authenticated:
             try:
                 from agents.models import Agent
-                agent, created = Agent.objects.get_or_create(user=self.request.user)
-            except Exception:
-                pass
+                agent = Agent.objects.get(user=self.request.user)
+            except Agent.DoesNotExist:
+                agent = None
 
         # Handle uploaded images
         from django.core.files.storage import default_storage
@@ -47,7 +73,8 @@ class PropertyViewSet(viewsets.ModelViewSet):
                 pass
 
         serializer.save(
-            agent=agent, 
+            agent=agent,
+            owner=self.request.user if self.request.user.is_authenticated else None,
             images=image_urls if image_urls else serializer.validated_data.get('images', []),
             amenities=amenities if amenities else serializer.validated_data.get('amenities', [])
         )

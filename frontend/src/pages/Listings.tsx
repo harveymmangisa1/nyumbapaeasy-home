@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Search, MapPin, SlidersHorizontal, Grid3X3, List, X, Loader2 } from "lucide-react";
+import { MapPin, SlidersHorizontal, Grid3X3, List, X, Loader2 } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PropertyCard } from "@/components/properties/PropertyCard";
@@ -28,7 +28,7 @@ export default function Listings() {
 
   const activeFilters = {
     category: searchParams.get("category") || "",
-    location: searchParams.get("location") || "",
+    search: searchParams.get("search") || "",
     price_type: searchParams.get("price_type") || "",
     bedrooms: searchParams.get("bedrooms") || "",
   };
@@ -39,7 +39,7 @@ export default function Listings() {
       try {
         const { properties, count, error } = await getProperties({
           category: activeFilters.category,
-          location: activeFilters.location,
+          search: activeFilters.search,
           price_type: activeFilters.price_type,
           bedrooms: activeFilters.bedrooms,
         });
@@ -82,15 +82,15 @@ export default function Listings() {
               <div className="relative flex-1">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search by location..."
+                  placeholder="Search by location, title, or keyword..."
                   className="pl-10"
-                  value={activeFilters.location}
+                  value={activeFilters.search}
                   onChange={(e) => {
                     const params = new URLSearchParams(searchParams);
                     if (e.target.value) {
-                      params.set("location", e.target.value);
+                      params.set("search", e.target.value);
                     } else {
-                      params.delete("location");
+                      params.delete("search");
                     }
                     setSearchParams(params);
                   }}
@@ -111,7 +111,7 @@ export default function Listings() {
                     <SelectValue placeholder="Type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="rent">For Rent</SelectItem>
+                    <SelectItem value="month">For Rent</SelectItem>
                     <SelectItem value="sale">For Sale</SelectItem>
                   </SelectContent>
                 </Select>

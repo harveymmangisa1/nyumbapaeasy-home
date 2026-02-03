@@ -2,24 +2,17 @@ import { apiFetch } from './api'
 
 export interface Profile {
   id: string
-  user_id: string
+  username: string
   email: string
-  full_name: string
-  avatar_url?: string
-  role: 'client' | 'agent' | 'landlord' | 'admin'
+  first_name?: string
+  last_name?: string
+  full_name?: string
   user_type?: 'client' | 'agent' | 'landlord' | 'admin'
-  phone?: string
-  company?: string
-  license_number?: string
-  commission_rate?: number
-  bio?: string
-  website?: string
-  social_links?: Record<string, any>
-  total_properties_sold?: number
-  total_properties_rented?: number
-  average_rating?: number
-  is_active?: boolean
+  phone_number?: string
+  profile_picture?: string
   is_verified?: boolean
+  date_joined?: string
+  last_login?: string
   created_at: string
   updated_at: string
 }
@@ -104,7 +97,7 @@ export const signUp = async (userData: {
         email: userData.email,
         password: userData.password,
         password2: userData.password,
-        username: userData.email.split('@')[0],
+        username: userData.email,
         first_name: userData.first_name || '',
         last_name: userData.last_name || '',
         user_type: userData.user_type || 'client'
@@ -121,16 +114,16 @@ export const signIn = async (email: string, password: string) => {
     const data = await apiFetch('/users/login/', {
       method: 'POST',
       body: JSON.stringify({
-        username: email, // Assuming username is email for now
+        username: email,
         password
       })
     })
     if (data.token) {
       localStorage.setItem('token', data.token)
     }
-    return { data, error: null }
+    return { data, user: data.user, error: null }
   } catch (error: any) {
-    return { data: null, error }
+    return { data: null, user: null, error }
   }
 }
 
@@ -180,7 +173,9 @@ export const getProperties = async (filters?: any) => {
     const params = new URLSearchParams()
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined) params.append(key, String(value))
+        if (value !== undefined && value !== null && value !== '') {
+          params.append(key, String(value))
+        }
       })
     }
     const data = await apiFetch(`/properties/?${params.toString()}`)
@@ -206,13 +201,14 @@ export const getProperty = async (id: string) => {
 
 export const createProperty = async (property: any) => {
   try {
+    const isFormData = property instanceof FormData
     const data = await apiFetch('/properties/', {
       method: 'POST',
-      body: JSON.stringify(property)
+      body: isFormData ? property : JSON.stringify(property)
     })
-    return { data, error: null }
+    return { property: data, error: null }
   } catch (error: any) {
-    return { data: null, error }
+    return { property: null, error }
   }
 }
 
@@ -240,7 +236,7 @@ export const deleteProperty = async (id: string) => {
 // User's properties
 export const getUserProperties = async (userId: string) => {
   try {
-    const data = await apiFetch(`/properties/?owner_id=${userId}`)
+    const data = await apiFetch(`/properties/?owner=${userId}`)
     return { properties: data.results || data, error: null }
   } catch (error: any) {
     return { properties: [], error }
@@ -250,7 +246,7 @@ export const getUserProperties = async (userId: string) => {
 // Agent's properties
 export const getAgentProperties = async (agentId: string) => {
   try {
-    const data = await apiFetch(`/properties/?agent_id=${agentId}`)
+    const data = await apiFetch(`/properties/?agent=${agentId}`)
     return { properties: data.results || data, error: null }
   } catch (error: any) {
     return { properties: [], error }

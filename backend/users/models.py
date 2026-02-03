@@ -5,6 +5,7 @@ class CustomUser(AbstractUser):
     USER_TYPE_CHOICES = [
         ('client', 'Client'),
         ('agent', 'Agent'),
+        ('landlord', 'Landlord'),
         ('admin', 'Admin'),
     ]
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default='client')

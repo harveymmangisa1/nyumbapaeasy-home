@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   getCurrentUser, getDashboardStats, getProperties, signOut,
-  Property, Profile, DashboardStats,
+  Property, Profile, DashboardStats, getUserProperties,
   uploadVerificationDocument, promoteProperty
 } from "@/lib/services";
 import { toast } from "sonner";
@@ -64,10 +64,10 @@ export default function Dashboard() {
         }
         setProfile(userProfile as Profile);
 
-        // 2. Get Properties (filtered by agent/user)
-        // Note: For now we fetch all properties but in a real app 
-        // the backend should filter by the logged in agent.
-        const { properties: userProperties, error: propError } = await getProperties();
+        // 2. Get Properties (filtered by current user)
+        const { properties: userProperties, error: propError } = await getUserProperties(
+          userProfile.id
+        );
         if (!propError) setProperties(userProperties || []);
 
         // 3. Get Stats
@@ -170,12 +170,19 @@ export default function Dashboard() {
           <div className="flex items-center gap-3 p-3 mb-2 rounded-xl hover:bg-muted/50 transition-colors cursor-pointer">
             <div className="h-9 w-9 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center flex-shrink-0">
               <span className="font-semibold text-white text-sm">
-                {profile?.full_name?.split(' ').map(n => n[0]).join('') || 'U'}
+                {(profile?.full_name || `${profile?.first_name || ''} ${profile?.last_name || ''}`)
+                  .trim()
+                  .split(' ')
+                  .filter(Boolean)
+                  .map(n => n[0])
+                  .join('') || 'U'}
               </span>
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
-                <p className="font-medium text-sm truncate">{profile?.full_name || 'User'}</p>
+                <p className="font-medium text-sm truncate">
+                  {profile?.full_name || `${profile?.first_name || ''} ${profile?.last_name || ''}`.trim() || 'User'}
+                </p>
                 {profile?.is_verified && <VerifiedBadge size="sm" />}
               </div>
               <p className="text-xs text-muted-foreground capitalize">{profile?.user_type || 'Client'}</p>
