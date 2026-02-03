@@ -19,7 +19,7 @@ export default function Login() {
     password: "",
     firstName: "",
     lastName: "",
-    userType: "client" as "client" | "agent"
+    userType: "client" as "client" | "landlord"
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -118,11 +118,11 @@ export default function Login() {
                     </Button>
                     <Button
                       type="button"
-                      variant={formData.userType === "agent" ? "default" : "outline"}
+                      variant={formData.userType === "landlord" ? "default" : "outline"}
                       className="flex-1"
-                      onClick={() => handleInputChange("userType", "agent")}
+                      onClick={() => handleInputChange("userType", "landlord")}
                     >
-                      Agent / Landlord
+                      Landlord
                     </Button>
                   </div>
                 </div>
